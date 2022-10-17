@@ -18,93 +18,40 @@ function transform(arr){
   if(!Array.isArray(arr)) {
     throw new Error (`'arr' parameter must be an instance of the Array!`)
   }
-  if (!arr.includes('--double-next') || !arr.includes('--double-prev') || !arr.includes('--discard-next') || !arr.includes('--discard-prev')) return arr ;
-  let newArr = arr;
-
-  if(newArr.includes('--discard-next') && newArr.includes('--double-prev')){
-    let delN = newArr.indexOf('--discard-next');
-    newArr.splice(delN, 2);
-    let doubleP = newArr.indexOf('--double-prev');
-    newArr.splice(doubleP, 1);
-      return newArr;
-
-  }
-
-   if(newArr.includes('--discard-next') && newArr.includes('--discard-prev')) {
-    let delN = newArr.indexOf('--discard-next');
-    newArr.splice(delN, 2);
-    let delP = newArr.indexOf('--discard-prev');
-    newArr.splice(delP, 1);
-      return newArr;
-
-    }
-
-  if(newArr.includes('--double-next') && newArr.includes('--double-prev')) {
-    let doubleN = newArr.indexOf('--double-next');
-    newArr.splice(doubleN, 1, newArr[doubleN + 1]);
-    let doubleP = newArr.indexOf('--double-prev');
-    if (newArr[doubleP - 1]) {
-      newArr.splice(doubleP, 1, newArr[doubleP - 1]);
-      return newArr; 
-      }else {
-        newArr.splice(doubleP, 1);
-      return newArr; 
-      }
-    }
   
-  if(newArr.includes('--double-next') && newArr.includes('--discard-prev')) {
-    let doubleN = newArr.indexOf('--double-next');
-    newArr.splice(doubleN, 1, newArr[doubleN + 1]);
-    let delP = newArr.indexOf('--discard-prev');
-    newArr.splice((delP - 1), 2);
-    return newArr; 
+  let newArr = Array.from(arr);
+
+for (let i = 0; i<newArr.length; i++) {
+  if (newArr[i] === '--discard-next') {
+    if (i === newArr.length-1 || !newArr[i+1]) {
+      newArr.splice(i, 1)
+    } else if (newArr[i+2] && newArr[i+2]=== '--discard-prev' || newArr[i+2] && newArr[i+2]=== '--double-prev'){
+      newArr.splice(i, 3);
+  } else {
+    newArr.splice(i, 2);
   }
+} else if (newArr[i] === '--discard-prev') {
+    if(newArr[i-2] && newArr[i-2]=== '--discard-next' || i === 0) {
+      newArr.splice(i, 1)
+    } else if(newArr[i-1]) {
+      newArr.splice(i-1, 2)
+    }
+    } else if(newArr[i] === '--double-prev') {
+      if(newArr[i-2] && newArr[i-2]=== '--discard-next' || i === 0) {
+        newArr.splice(i, 1);
+      } else if(newArr[i-1]) {
+        newArr.splice(i, 1, newArr[i-1])
+    }
 
-  if(newArr.includes('--discard-prev')) {
-    let delP = newArr.indexOf('--discard-prev');
-    if (newArr[delP - 1]) {
-    newArr.splice((delP - 1), 2);
-    return newArr; 
-    } else {
-      newArr.splice(delP, 1);
-    return newArr; 
+    } else if (newArr[i] === '--double-next') {
+      if (i === newArr.length-1 || !newArr[i+1]) {
+        newArr.splice(i, 1)
+      } else {
+        newArr.splice(i, 1, newArr[i+1]);
     }
-   }
-
-   if(newArr.includes('--double-prev')) {
-    let doubleP = newArr.indexOf('--double-prev');
-    if (newArr[doubleP - 1]) {
-    newArr.splice(doubleP, 1, newArr[doubleP - 1]);
-    return newArr; 
-    }else {
-      newArr.splice(doubleP, 1);
-    return newArr; 
-    }
-   }
-   
-   if(newArr.includes('--double-next')) {
-    let doubleN = newArr.indexOf('--double-next');
-    if (newArr[doubleN + 1]) {
-    newArr.splice(doubleN, 1, newArr[doubleN + 1]);
-    return newArr; 
-    } else {
-      newArr.splice(doubleN, 1);
-    return newArr; 
-    }
+    } 
   }
-
-
-   if(newArr.includes('--discard-next')) {
-    let delN = newArr.indexOf('--discard-next');
-    if (newArr[delN + 1]) {
-    newArr.splice(delN, 2);
-    return newArr; 
-    }else {
-      newArr.splice(delN, 1);
-    return newArr; 
-    }
-   }
-   return [];
+  return newArr;
 }
 
 module.exports = {
